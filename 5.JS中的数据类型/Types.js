@@ -110,11 +110,62 @@ console.log(str.valueOf());
 /**
  * ToPrimitive(input[, PreferredType])
  * 将 input 转化为原始类型的值。 PreferredType 的值只能是 Number 或 String。
- */
-/** 
+ * 
  * 如果 PreferredType 的值是 Number, 则按如下规则执行：
  * 1、如果 input 是原始类型，则直接返回 input.
  * 2、调用 input.valueOf()，如果结果是原始类型，则返回该结果
  * 3、调用 input.toString()，如果结果是原始类型，则返回该结果
  * 4、抛出 TypeError 异常
+ * 
+ * 如果 PreferredType 的值是 String, 则按如下规则执行:
+ * (其实和上面的区别是交换了 2/3 步的顺序)
+ * 1、如果 input 是原始类型，则直接返回 input.
+ * 2、调用 input.toString()，如果结果是原始类型，则返回该结果
+ * 3、调用 input.valueOf()，如果结果是原始类型，则返回该结果
+ * 4、抛出 TypeError 异常
+ * 
+ * 如果 PreferredType 的值未传入
+ *     如果 input 是 Date 类型，则视为把 PreferredType 的值视为 String 操作
+ *     否则 PreferredType 视为 Number 操作。
  */
+
+/**
+ * ToBoolean(argument)
+ * 实际上 if 后面表达式的值就是会按照这个函数操作。具体规则如下：
+ *     (Argument Type)            (Result)
+ *     Undefined                  false
+ *     Null                       false
+ *     Boolean                    参数本身对应的 bool 值
+ *     Number                     仅当 argument 为 +0, -0, NaN 是返回 false, 其余返回 true
+ *     String                     仅当 argument 为空字符串(长度为0)是，返回 false, 其余返回 true
+ *     Symbol                     true
+ *     Object                     true
+ */
+
+/**
+ * ToNumber(argument)
+ * ToNumber的转化并不总是成功，有时会转化成NaN，有时则直接抛出异常
+ * 规则如下：
+ *     (Argument Type)            (Result)
+ *     Undefined                  NaN
+ *     Null                       +0
+ *     Boolean                    true -- 1; false -- +0
+ *     Number                     对应的 number 原始类型
+ *     String                     将字符串中的内容转化为数字（比如"23"->23），如果转化失败则返回NaN（比如"23a"->NaN）
+ *     Symbol                     抛出 TypeError 异常
+ *     Object                     先primValue = ToPrimitive(argument, Number)，再对primValue 使用 ToNumber(primValue)
+ */
+
+/**
+ * ToString(argument)
+ * 
+ * 规则如下：
+ *     (Argument Type)            (Result)
+ *     Undefined                  "undefined"
+ *     Null                       "null"
+ *     Boolean                    true -- "true"; false -- "false"
+ *     Number                     用字符串显示数字
+ *     String                     直接返回对应 string 原始类型
+ *     Symbol                     抛出 TypeError 异常
+ *     Object                     先primValue = ToPrimitive(argument, Number)，再对primValue 使用 ToString(primValue)
+*/
