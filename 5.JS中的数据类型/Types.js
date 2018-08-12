@@ -169,3 +169,8 @@ console.log(str.valueOf());
  *     Symbol                     抛出 TypeError 异常
  *     Object                     先primValue = ToPrimitive(argument, Number)，再对primValue 使用 ToString(primValue)
 */
+
+/**
+ * 隐式类型转换实际上都是触发上面四个内置函数
+ * 如 if 的表达式中期望 bool 类型，那么就会触发 ToBoolean 过程
+ */
